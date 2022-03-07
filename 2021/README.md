@@ -1,4 +1,4 @@
-# Libdemfall
+# FIIEI Semester 2022
 
 
 As regards to the document Libdemfall.Rmd, it is a copy of the RMarkdown file used to generate [Three ways to measure liberal democracy in the world](https://www.jordimas.cat/post/2022-03-10-vdemfall/). Notice that the document uses three datasets:
