@@ -1,0 +1,87 @@
+---
+title: "CHES dataset"
+author: "nom estudiants"
+date: "4/9/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(DT)
+ches <- read_csv("https://www.chesdata.eu/s/CHES2019V3.csv")
+```
+
+Aquest exercici de la PAC consisteix en un treball en grup en què heu de descriure una base de dades i generar alguns gràfics amb les dades.
+
+- Per començar, genereu el document Html amb el botó Knitr i llegiu detingudament aquestes instruccions.
+- Aquest RMarkdown consta de tres apartats: Introducció, País i Eixos. L'apartat Introducció i l'apartat del País l'haureu d'escriure conjuntament en grup. A l'apartat Eixos, cada estudiant haurà de triar un eix ideològic i de manera individual haurà de generar un gràfic i descriure'n el contingut.
+- Elimineu totes les instruccions de manera que al final només genereu l'Html amb el vostre treball.
+- L'objectiu és que el grup generi un **únic treball**, publicat en Html a la xarxa mitjançant [RPubs](https://rpubs.com/).
+- Un cop tingueu el Rmd omplert i hagueu generat l'Html al Viewer, cliqueu a l'icona blava del Viewer (Publish -> Publish a Document) i seleccioneu RPubs.
+- Només cal que un estudiant generi l'Html RPubs. L'estudiant en qüestió compartirà la direcció web amb la resta d'estudiants del grup. Cada estudiant adjuntarà la direcció web de l'RPubs a l'apartat corresponent de la PAC. NOMÉS caldrà ubicar-hi l'adreça web.
+
+## Introducció
+
+Expliqueu què és la base de dades [CHES](https://www.chesdata.eu/).
+
+- Utilitzeu el que heu après a l'assignatura.
+- **Màxim 250 paraules.**
+
+
+## Pais. Poseu aquí el nom del país en qüestió
+
+El codi següent un genera un marc de dades:
+
+- Haureu de canviar el número del país (1 = Bèlgica) pel número del vostre grup per visualitzar les dades del país que us correspon.
+- Per informació del país, els partits polítics i les variables del marc de dades, consulteu el [llibre de codis](https://static1.squarespace.com/static/5975c9bfdb29d6a05c65209b/t/5fa04ec05d3c8218b7c91450/1604341440585/2019_CHES_codebook.pdf) i el [qüestionari](https://static1.squarespace.com/static/5975c9bfdb29d6a05c65209b/t/5ed3029fe080e33f639e6e9a/1590887075513/CHES_UK_Qualtrics.pdf).
+- Si voleu, elimineu el # a select i introduïu-hi el nom de les variables que us vulgueu incloure en el marc dades.
+- Feu una descripció de les dades que apareixen a la taula. **Màxim 250 paraules**.
+
+
+```{r}
+ches %>%
+  filter(country == 1) %>%
+# select(party, euposition) %>%
+  head(15) %>%
+  DT::datatable(ches)
+```
+
+
+
+## Nom eix 1, nom estudiant
+
+En aquest apartat haureu d'ubicar espacialment els partits del país que us correspongui en dos eixos.
+
+
+- Cada estudiant haurà de triar dos eixos ideològics diferents que cregui que tinguin relació entre ells i fer-ne una descripció. Procura interpretar correctament els eixos que estiguis descrivint. 
+- **Màxim 250 paraules** (per estudiant).
+
+*Copieu i enganxeu el següent chunk tantes vegades com correspongui*
+```{r}
+ches %>%
+  filter(country == 1) %>% #canvieu el nom del país
+  ggplot(aes(x = eu_salience, y = eu_position, col = party)) + #poseu una variable a l'eix de les x i una variable a l'eix de les y
+  geom_text(aes(label = party), show.legend = F) +
+  theme_minimal()
+```
+
+
+## Nom eix 2, nom estudiant
+
+## Nom eix 3, nom estudiant
+
+Heu de fer tants eixos com estudiants hi hagi al grup:
+
+- No es poden repetir els eixos.
+
+
+
+## Referències
+
+No us oblideu de referenciar les fonts i bases de dades utilitzades!!
+
