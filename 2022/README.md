@@ -1,9 +1,9 @@
 # FIIEI Semester 2022
 
-## Start wars
+## Start wars. 
 The code in the document Start_wars.Rmd has been used to generate [Start wars. Russia as a war initiator](https://www.jordimas.cat/post/2022-03-18-start_wars/).
 
-## Libdemfall
+## Libdemfall. 
 As regards to the document Libdemfall.Rmd, it is a copy of the RMarkdown file used to generate [Three ways to measure liberal democracy in the world](https://www.jordimas.cat/post/2022-03-10-vdemfall/). Notice that the document uses three datasets:
 - V-Dem v12
 - Penn World Tables v10
