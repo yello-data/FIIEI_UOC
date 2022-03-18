@@ -2,6 +2,8 @@
 title: "Three ways to measure liberal democracy in the world"
 date: "3/5/2022"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}

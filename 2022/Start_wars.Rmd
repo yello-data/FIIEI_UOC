@@ -1,0 +1,96 @@
+---
+title: "Untitled"
+author: "nom estudiant"
+date: "3/16/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(forcats)
+library(knitr)
+
+#CORRELATES OF WAR: STATE SYSTEM MEMBERSHIP
+download.file("https://correlatesofwar.org/data-sets/state-system-membership/states2016/at_download/file",
+              "states.csv")
+states <- read_csv("states.csv")
+
+#CORRELATES OF WAR: INTERSTATE WAR
+download.file("https://correlatesofwar.org/data-sets/COW-war/inter-state-war-data/at_download/file",
+              "cow.csv")
+cow <- read_csv("cow.csv")
+```
+
+First, we calculate the number of years each state is member of the state system from the [COW State System Membership (v2016)](https://correlatesofwar.org/data-sets/state-system-membership). See a sample:
+
+```{r membership, echo = FALSE}
+membership <- states %>% 
+  mutate(years = endyear - styear + 1) %>% 
+  select(ccode, statenme, years) %>% 
+  group_by(ccode, statenme) %>% 
+  summarize(years = sum(years))
+membership %>% head(10) %>% kable(cap = "Years of membership in the state system 1816-2016")
+```
+
+
+Second, we calculate the number of accumulated years every state has been in a war [COW Wars v4.0, 1816-2007](https://correlatesofwar.org/data-sets/COW-war). See a sample:
+
+```{r war, echo = FALSE}
+war <- cow %>% 
+  mutate(WYears = EndYear1 - StartYear1 +1,
+         Initiator = if_else(Initiator == 1, "Yes", "No")) %>% 
+  select(WarNum, StateName, ccode, WYears, Initiator) %>% 
+  group_by(ccode, StateName, Initiator) %>% 
+  summarize(WYears = sum(WYears))
+war %>% head(10) %>% kable(cap = "Years being in a war")
+```
+
+Third, we join the two datasets, create categories for the main powers, and calculate the war / year percentage.
+
+```{r categories, echo = FALSE}
+percentage <- membership %>% 
+  left_join(war) %>% 
+  mutate(pow = case_when(ccode == 2 ~ "US",
+                       ccode == 365 ~ "Russia",
+                       ccode == 200 ~ "United Kingdom",
+                       ccode == 220 ~ "France",
+                       ccode == 710 ~ "China",
+                       TRUE ~ "Others")) %>%
+  mutate(WYears = if_else(!is.na(WYears), WYears, 0)) %>%
+  group_by(pow, Initiator) %>% 
+  summarize(WYears = sum(WYears),
+            years = sum(years)) %>% 
+  mutate(Perc = WYears / years * 100) %>% 
+  filter(!is.na(Initiator))
+```
+
+And plot! It seems that Russia is not among the most participative countries ...
+
+```{r plot1, echo = FALSE, fig.height = 5, fig.width = 9, fig.align = "center"}
+percentage %>% 
+  ggplot(aes(x = fct_reorder(pow, Perc), y = Perc, fill = Initiator)) +
+  geom_col() +
+  scale_fill_brewer(type = "qual", palette = 3) +
+  theme_minimal() +
+  labs(x = NULL, y = NULL)
+```
+
+Though it seems that it has a special predilection to star wars 
+within all wars that Russia has participated, it is a common initiator ...
+
+```{r plot2, echo = FALSE, fig.height = 5, fig.width = 9, fig.align = "center"}
+percentage %>% 
+  ggplot(aes(x = fct_reorder(pow, Perc), y = Perc, fill = Initiator)) +
+  geom_col(position = "fill") + #change position
+  scale_fill_brewer(type = "qual", palette = 3) +
+  theme_minimal() +
+  labs(x = NULL, y = NULL)
+```
+
+

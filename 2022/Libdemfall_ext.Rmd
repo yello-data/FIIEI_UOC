@@ -1,0 +1,55 @@
+---
+title: "Three ways to measure liberal democracy in the world"
+date: "3/5/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, message = F, echo = F, warning = F)
+library(countrycode)
+library(tidyverse)
+library(patchwork)
+library(haven)
+
+#DATASET 1: COUNTRYCODE (REGION VARIABLE)
+ccode <- countrycode::codelist_panel %>% 
+  select(country.name.en, year, vdem, continent, iso3c, region)
+
+#DATASET 2: PENN WORLD TABLES (GDP AND POPULATION VARIABLES)
+pwt <- read_dta("https://www.rug.nl/ggdc/docs/pwt100.dta") %>% 
+  transmute(countrycode, country, year, rgdpo, pop,
+            gdpcap = rgdpo / pop)
+
+#DATASET 3: VARIETIES OF DEMOCRACY (LIBERAL DEMOCRACY VARIABLE)
+vdem12 <- read_csv("vdem12_git.csv") %>% 
+  filter(year > 1949) %>% 
+  left_join(ccode, by = c("country_id" = "vdem", "year")) %>% 
+  left_join(pwt, by = c("year", "iso3c" = "countrycode"))
+```
+
+
+<style>
+body {
+font-size: 15pt;
+text-align: justify}
+</style>
+
+In a previous post, 
+
+```{r count, fig.height = 5, fig.width = 9, fig.align = "center", fig.cap= "Democracy in the world, by country (1950-2021)"}
+vdem12 %>% 
+  transmute(country_text_id, year, region, v2x_libdem, pop_lib = (v2x_libdem * pop), pop,
+            gdp_lib = (v2x_libdem * rgdpo), rgdpo) %>% 
+  group_by(year) %>% 
+  summarize(lib_dem = mean(v2x_libdem, na.rm = T),
+            lib_pop = sum(pop_lib, na.rm = T) / sum(pop, na.rm = T),
+            lib_gdp = sum(gdp_lib, na.rm = T) / sum(rgdpo, na.rm = T)) %>% 
+  pivot_longer(lib_dem:lib_gdp) %>% 
+  ggplot(aes(x = year, y = value)) +
+  geom_line() +
+  facet_wrap(.~name) +
+  theme_linedraw()
+```
+
