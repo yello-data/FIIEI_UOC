@@ -1,0 +1,35 @@
+---
+title: "Interdemocratic peace"
+author: "Jordi Mas"
+date: "3/21/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(vdemdata)
+
+```
+
+
+
+
+Democratic peace research program
+
+Democracies are more likely than other kinds of governments to:
+
+- **ally** with one another;
+- **trade** with one another;
+- form **long-lasting intergovernmental organizations**;
+- **accept mediation** in disputes with one another;
+- obey **international law**;
+- **avoid militarized disputes** with one another short of war;
+- and **win the wars** in which they choose to participate.
+
+Controlling for the effects of numerous variables:
+
+- contiguity, wealth, alliance membership, relative military capabilities, rates of economic growth, and the presence of hegemon.
+

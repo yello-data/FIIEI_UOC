@@ -1,0 +1,93 @@
+---
+title: "CHES dataset"
+author: "nom estudiants"
+date: "4/9/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(ggplot2)
+ches <- read_csv("https://www.chesdata.eu/s/CHES2019_experts.csv") %>% 
+  mutate(across(lrecon:galtan_self, ~ as.numeric(.)))
+```
+
+Este ejercicio de la PAC consiste en un trabajo en grupo en el que exploraremos cómo se crean bases de datos a través de encuestas a expertos.
+
+- Para empezar, generad el documento Html con el botón Knitr y leed detenidamente estas instrucciones.
+- Este RMarkdown consta de tres apartados: Introducción, País y Ejes. El apartado Introducción y el apartado del País deberá escribirlo conjuntamente en grupo. En el apartado **Ejes**, cada estudiante deberá elegir un eje ideológico y de forma individual deberá generar un gráfico y describir su contenido.
+- Eliminad todas las instrucciones de forma que al final sólo se genere el Html con vuestro trabajo.
+- El objetivo es que el grupo genere un **único trabajo**, publicado en Html en la red mediante [RPubs](https://rpubs.com/).
+- Una vez tengáis el Rmd rellenado y hayaís generado Html en Viewer, haced clic en el icono azul del Viewer (Publish -> Publish a Document) y seleccionad RPubs.
+- Sólo es necesario que un estudiante genere el Html con RPubs. El estudiante en cuestión compartirá la dirección web con el resto de estudiantes del grupo. Cada estudiante adjuntará la dirección web del RPubs en el apartado correspondiente de la PEC. SOLO será necesario poner la dirección web.
+
+## Introducción
+
+En este apartado, en grupo, debéis explicar (**Máximo 250 palabras**):
+
+- Qué es la base de datos [CHES](https://www.chesdata.eu/).
+- Realizar una descripción de su metodología (fuentes de información, sistema de agregación, etc.).
+- Reflexionar sobre la transparencia de los datos.
+
+
+## País. Poned en este título el nombre del país de vuestro grupo
+
+En este apartado debéis adaptar el código que se muestra a continuación y hacer una descripción de los datos que aparecen en la tabla (**Máximo 250 palabras**).
+
+- Para encontrar información del país, los partidos políticos y las variables del marco de datos, consultad el [libro de códigos](https://static1.squarespace.com/static/5975c9bfdb29d6a05c65209b/t/5fa04ec05d3c8218b7c91450/1604341440585/2019_CHES_codebook.pdf) y el [cuestionario](https://static1.squarespace.com/static/5975c9bfdb29d6a05c65209b/t/5ed3029fe080e33f639e6e9a/1590887075513/CHES_UK_Qualtrics.pdf).
+- Para visualizar los datos de vuestro país en el siguiente marco de datos, deberéis cambiar el nombre del país ("aus" = Australia) por el que corresponda con vuestro número de grupo.
+- Dentro de la función select, introducid el nombre de **cinco variables** de modo que tengáis la columna del partido político y cinco variables más). Las variables deben ser relevantes para el país en concreto que estáis estudiando. Justificad la elección de las variables en la descripción de la tabla.
+
+
+```{r}
+ches_p4 <- ches %>%
+  filter(cname == "aus") %>%
+  select(party_name, lrecon, russian_interference, sociallifestyle, civlib_laworder)
+ches_p4 %>% 
+  group_by(party_name) %>%
+  summarize(across(1:last_col(), ~ round(mean(., na.rm = TRUE), 1))) %>% 
+  kable()
+```
+
+
+
+## Nombre eje 1, nombre estudiante
+
+En este apartado, cada estudiante analizará cómo los expertos han puntuado dos partidos en un eje ideológico concreto, siguiendo el ejemplo que se muestra a continuación (**Máximo 250 palabras** por estudiante).
+
+- Cada estudiante debe escoger un eje ideológico diferente. Se valorará que el estudiante seleccione unos partidos apropiados en el eje ideológico que está analizando.
+- Los partidos escogidos pueden solaparse entre estudiantes del mismo grupo.
+- Valorad cuestiones como la fiabilidad de los datos, validez, posibles sesgos, etc. (la bibliografía recomendada de Cherie Maestas, disponible en el aula, puede ser de gran ayuda para profundizar en esta parte).
+
+*Copiad y pegad el siguiente chunk tantas veces como corresponda*
+
+```{r}
+ches_p4 %>%
+  filter(party_name %in% c("SPO", "FPO")) %>% 
+  ggplot(aes(x = russian_interference, fill = party_name)) + 
+  geom_bar(show.legend = F) +
+  facet_wrap(. ~ party_name) +
+  theme_minimal()
+```
+
+
+## Nombre eje 2, nombre estudiante
+
+## Nom eje 3, nombre estudiante
+
+Tenéis que hacer tantos ejes como estudiantes haya en el grupo:
+
+- No se pueden repetir los ejes.
+
+
+
+## Referencias
+
+¡¡No os olvidéis de referenciar las fuentes y bases de datos utilizadas!!
+
